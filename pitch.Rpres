@@ -1,0 +1,77 @@
+SwiftKey Text Predictor: A Data Science Capstone
+========================================================
+author: Altamash Ali
+date: 25th January, 2026
+autosize: true
+font-family: 'Helvetica'
+
+<style>
+/* This block handles the "Blue" Professional Theme */
+.reveal h1, .reveal h2, .reveal h3 {
+  color: #003366; /* Professional Navy Blue */
+}
+.reveal p, .reveal li {
+  color: #333333; /* Dark Grey for readability */
+  font-size: 30px;
+}
+.reveal .state-background {
+  background: #f0f8ff; /* AliceBlue: Very subtle blue tint */
+}
+/* Highlight color for strong text */
+strong {
+  color: #0066cc; /* Brighter Blue for emphasis */
+}
+</style>
+
+The Challenge: Mobile Communication
+========================================================
+
+In the modern digital landscape, mobile users demand **speed** and **efficiency**.
+
+- **The Friction Point:** Typing on touchscreens is error-prone and time-consuming. "Fat-finger" errors reduce communication velocity.
+- **The Opportunity:** A smart, predictive algorithm can significantly reduce keystrokes.
+- **The Solution:** We have developed a lightweight Natural Language Processing (NLP) engine that predicts user intent in real-time.
+
+
+
+The Algorithm: Katz Back-off Model
+========================================================
+
+Our predictive engine is built on a robust statistical analysis of over **4 million** lines of text (Blogs, News, Twitter).
+
+**1. N-Gram Hierarchies:**
+We utilize a "Stupid Back-off" strategy for maximum efficiency:
+- **Quadgrams (4-words):** Checks for deep context first.
+- **Trigrams (3-words):** If no match, backs off to a 3-word sequence.
+- **Bigrams (2-words):** Finally, defaults to the most common word pairs.
+
+**2. Optimization:**
+The model is pruned to remove rare sequences, ensuring the final data structure is **< 2MB**, allowing for sub-millisecond query times.
+
+
+
+Product Architecture & Design
+========================================================
+
+The Shiny Application is designed with a **"Mobile-First"** philosophy.
+
+- **Zero-Latency Interface:** The app computes predictions instantly as the user types—no "Submit" button required.
+- **Clean UI:** A minimalist design focuses entirely on the user's text and the predicted result.
+- **Error Handling:** The model gracefully handles unknown words by reverting to the most statistically probable English stop-words.
+
+**Key Metric:** Average prediction time is **< 0.1 seconds**.
+
+Live Demonstration & Future Roadmap
+========================================================
+
+The application is fully deployed and ready for user testing.
+
+**Future Scalability:**
+- **Personalization:** Future versions will learn from specific user idiolects.
+- **Context Awareness:** Integration of Recurrent Neural Networks (RNNs) for paragraph-level context.
+
+**Experience the App:**
+[https://altamashali.shinyapps.io/swiftkey-predictor/]
+
+<br>
+<small>Prepared for the Data Science Capstone • Johns Hopkins University</small>
