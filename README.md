@@ -2,8 +2,14 @@
 Built as the final project for the Johns Hopkins Data Science Specialization (DSS).
 
 ## Live Links
-* **Shiny Web Application:** [https://altamashali.shinyapps.io/swiftkey-predictor/](https://altamashali.shinyapps.io/swiftkey-predictor/)
-* **RPubs Pitch Deck:** [https://rpubs.com/altamashali/swiftkey-predictor](https://rpubs.com/altamashali/swiftkey-predictor)
+* **Interactive Shiny App:** [Predictive Text Engine](https://altamashali.shinyapps.io/swiftkey-predictor/)  
+  *Experience the model in real-time.*
+  
+* **Professional Pitch Deck:** [RPubs Presentation](https://rpubs.com/altamashali/swiftkey-predictor)  
+  *A 5-slide executive summary of the project.*
+
+* **Technical Milestone Report:** [Exploratory Data Analysis](https://altamashali.github.io/dss-capstone-swiftkey/)  
+  *Detailed look at the data cleaning, n-gram distributions, and NLP strategy.*
 
 ## Project Overview
 The goal of this project was to build a predictive text engine similar to SwiftKey. The application takes a user-inputted phrase and predicts the most likely next word in real-time.
