@@ -8,7 +8,7 @@ Built as the final project for the Johns Hopkins Data Science Specialization (DS
 * **Professional Pitch Deck:** [RPubs Presentation](https://rpubs.com/altamashali/swiftkey-predictor)  
   *A 5-slide executive summary of the project.*
 
-* **Technical Milestone Report:** [Exploratory Data Analysis](https://altamashali.github.io/dss-capstone-swiftkey/)  
+* **Technical Milestone Report:** [Exploratory Data Analysis](https://realaltamashali.github.io/dss-capstone-swiftkey/)  
   *Detailed look at the data cleaning, n-gram distributions, and NLP strategy.*
 
 ## Project Overview
