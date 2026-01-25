@@ -1,0 +1,180 @@
+---
+title: "Exploratory Data Analysis: SwiftKey Milestone Report"
+author: "Altamash Ali"
+date: "25th January, 2026"
+output: 
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style type="text/css">
+/* 1. POSITION THE FIRST TITLE (EXECUTIVE SUMMARY) */
+#executive-summary {
+    margin-top: 80px !important;
+    padding-top: 0px !important;
+}
+
+/* 2. UNIFORM SPACING FOR ALL OTHER MAIN TITLES */
+h1 {
+    margin-top: 100px !important;
+    margin-bottom: 30px !important;
+    border-bottom: 1px solid #eee; 
+    padding-bottom: 10px;
+}
+
+/* 3. SUB-HEADER SPACING */
+h3 {
+    margin-top: 40px !important;
+    margin-bottom: 20px !important;
+    color: #2c3e50;
+}
+
+/* 4. KILL INFINITE SCROLL */
+.tocify-extend-page {
+    display: none !important;
+    height: 0 !important;
+}
+
+/* 5. CLEAN FOOTER */
+hr {
+    margin-top: 100px;
+}
+body {
+    padding-bottom: 50px !important;
+}
+</style>
+
+```{r setup, include=FALSE}
+# Adjusting working directory and global options
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# Loading necessary libraries
+library(stringi)
+library(ggplot2)
+library(dplyr)
+library(tidytext)
+library(knitr)
+```
+
+# Executive Summary
+
+### Project Goal
+
+To explore the HC Corpora dataset (Blogs, News, and Twitter) and establish a foundation for a high-performance next-word prediction algorithm.
+
+###  Methodology
+
+* `*Dataset   :*` HC Corpora (EN-US) containing over 4M lines of text.
+* `*Sampling  :*` 1% random sample used for computational efficiency and reproducibility.
+* `*Tools     :*` `tidytext` for tokenization and `ggplot2` for frequency visualization.
+
+###  Key Findings
+
+* `Scale   :` The raw text files exceed 550MB, necessitating an optimized N-gram dictionary.
+* `Patterns:` N-gram distributions follow Zipf’s Law, allowing for significant data pruning without sacrificing accuracy.
+* `Strategy:` A Katz Back-off model is identified as the most efficient approach for the final Shiny application.
+
+# Data Statistics
+
+Before cleaning, I analyzed the raw files to understand their scale. The volume of data requires an efficient sampling strategy to maintain sub-second prediction latency in the final product.
+
+```{r}
+# Note: Ensure files are in your working directory
+file_size_blogs <- file.info("en_US.blogs.txt")$size / 1024^2
+file_size_news <- file.info("en_US.news.txt")$size / 1024^2
+file_size_twitter <- file.info("en_US.twitter.txt")$size / 1024^2
+
+blogs <- readLines("en_US.blogs.txt", encoding = "UTF-8", skipNul = TRUE)
+news <- readLines("en_US.news.txt", encoding = "UTF-8", skipNul = TRUE)
+twitter <- readLines("en_US.twitter.txt", encoding = "UTF-8", skipNul = TRUE)
+
+summary_table <- data.frame(
+    File = c("Blogs", "News", "Twitter"),
+    Size_MB = c(file_size_blogs, file_size_news, file_size_twitter),
+    Line_Count = c(length(blogs), length(news), length(twitter)),
+    Word_Count = c(sum(stri_count_words(blogs)), sum(stri_count_words(news)), sum(stri_count_words(twitter)))
+)
+
+kable(summary_table, caption = "Summary of Raw Data Files", digits = 2)
+```
+
+# Data Cleaning & Sampling
+
+To ensure the algorithm remains fast and responsive, I extracted a *1% random sample*. The cleaning pipeline included:
+
+1. Conversion to *lowercase*.
+2. Removal of *punctuation and numbers*.
+3. Filtering of *special characters* and excess white space.
+
+```{r}
+set.seed(1234)
+sample_data <- c(sample(blogs, length(blogs) * 0.01),
+                 sample(news, length(news) * 0.01),
+                 sample(twitter, length(twitter) * 0.01))
+
+sample_df <- data.frame(text = sample_data, stringsAsFactors = FALSE)
+```
+
+# Exploratory Analysis
+
+I analyzed *N-grams*, which are sequences of words. This identifies the probability of word transitions—the core logic of my predictor.
+
+### Top Unigrams (Single Words)
+
+The most common words are "stop words." While often removed in sentiment analysis, they are preserved here as they are essential for the grammatical flow of natural language prediction.
+
+```{r}
+unigrams <- sample_df %>%
+    unnest_tokens(word, text) %>%
+    count(word, sort = TRUE) %>%
+    top_n(15, n)
+
+ggplot(unigrams, aes(x = reorder(word, n), y = n)) +
+    geom_col(fill = "#2c3e50") +
+    coord_flip() +
+    labs(title = "Top 15 Most Common Words", x = "Word", y = "Frequency") +
+    theme_minimal()
+```
+
+### Top Bigrams (Two-Word Pairs)
+
+Bigrams are the foundation of my next-word prediction. For example, the model identifies "of the" and "in the" as highly frequent anchors.
+
+```{r}
+bigrams <- sample_df %>%
+    unnest_tokens(bigram, text, token = "ngrams", n = 2) %>%
+    count(bigram, sort = TRUE) %>%
+    top_n(15, n)
+
+ggplot(bigrams, aes(x = reorder(bigram, n), y = n)) +
+    geom_col(fill = "#e74c3c") +
+    coord_flip() +
+    labs(title = "Top 15 Most Common Bigrams", x = "Bigram", y = "Frequency") +
+    theme_minimal()
+```
+
+# Modeling Strategy
+
+The exploratory analysis confirms that the data is sufficient for building a robust predictive model.
+
+### 1. The Algorithm
+I will implement a *Katz Back-off* model.
+
+* `Trigram Match :` The system first looks for a match based on the last two words typed.
+* `Bigram Match  :` If no trigram is found, it "backs off" to a one-word match.
+* `Unigram Match :` If all else fails, it provides the most frequent word in the English language.
+
+### 2. Performance Optimization
+
+To handle memory constraints on the Shiny server:
+
+* `Pruning       :` Remove N-grams that appear only once (singletons).
+* `Data Structure:` Use `.rds` files for fast loading and low memory footprint.
+
+### Source Code
+
+The full source code for this project and the final Shiny Application is available on GitHub: [View Source on GitHub](https://github.com/realaltamashali/dss-capstone-swiftkey)
