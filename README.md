@@ -20,7 +20,7 @@ The goal of this project was to build a predictive text engine similar to SwiftK
 - **Cleaning & Tokenization:** Handled via the `tidytext` and `stringr` packages.
 
 ## Tech Stack
-- **Language:** R
+- **Language:** R, HTML
 - **Framework:** Shiny
 - **Packages:** dplyr, tidytext, stringr, knitr
 
