@@ -1,4 +1,5 @@
 # NLP Next Word Predictor: SwiftKey Capstone
+
 Built as the final project for the Johns Hopkins Data Science Specialization (DSS).
 
 [![JHU Certified](https://img.shields.io/badge/Certified-Johns_Hopkins_University-002D72?logo=johnshopkins&logoColor=white)](https://www.coursera.org/account/accomplishments/specialization/03JY70ZMOKVJ)
